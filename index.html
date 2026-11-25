@@ -310,6 +310,10 @@ summary{cursor:pointer;text-align:center;font-size:.88rem;color:#5d4a6d}
         <div class="cd"><div><b id="d">–</b><small>days</small></div><div><b id="h">–</b><small>hours</small></div><div><b id="m">–</b><small>mins</small></div><div><b id="s">–</b><small>secs</small></div></div>
         <p id="cdnote" style="font-size:.82rem;color:#5d4a6d"></p>
       </div>
+      <details class="rv" style="--i:4"><summary>Family tools: make a personal invite link</summary>
+        <div class="tools"><label for="gIn">Guest or family name</label><input type="text" id="gIn" placeholder="e.g. Rahul Sharma and family"><input type="text" id="gLink" readonly aria-label="Personal invitation link">
+        <button id="shareWa">Send on WhatsApp</button><button id="copyLink">Copy link</button><div id="toast" role="status"></div></div>
+      </details>
     </div>
   </section>
 </div>
@@ -423,7 +427,12 @@ summary{cursor:pointer;text-align:center;font-size:.88rem;color:#5d4a6d}
   }
   tick();setInterval(tick,1000);
 
-  
+  /* Family tools */
+  function toast(m){$('toast').textContent=m;clearTimeout(toast.t);toast.t=setTimeout(function(){$('toast').textContent=''},3500)}
+  function copy(text,msg){
+    function fb(){var ta=document.createElement('textarea');ta.value=text;ta.style.cssText='position:fixed;opacity:0';document.body.appendChild(ta);ta.select();var ok=false;try{ok=document.execCommand('copy')}catch(e){}document.body.removeChild(ta);toast(ok?msg:'Could not copy.')}
+    try{navigator.clipboard&&navigator.clipboard.writeText?navigator.clipboard.writeText(text).then(function(){toast(msg)},fb):fb()}catch(e){fb()}
+  }
   function slug(n){return n.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'')}
   function link(){var s=slug($('gIn').value);return s?base+'#'+s:base}
   $('gIn').oninput=function(){$('gLink').value=link()};$('gLink').value=link();
