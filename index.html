@@ -2,211 +2,139 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <title>Vishal weds Priya · Wedding Invitation</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Lora:ital,wght@0,400;0,600;1,400&family=Playfair+Display:wght@500;600;700&family=Tiro+Devanagari+Hindi&display=swap" rel="stylesheet">
 <style>
 *{box-sizing:border-box}
-html,body{margin:0;height:100%;background:#090611;overflow:hidden;user-select:none;-webkit-tap-highlight-color:transparent}
-body{font-family:Lora,Georgia,serif;color:#fff;line-height:1.55;display:flex;align-items:center;justify-content:center}
+html,body{margin:0;width:100%;height:100%;background:#090611;overflow:hidden;user-select:none;-webkit-tap-highlight-color:transparent}
+body{font-family:Lora,Georgia,serif;color:#fff;line-height:1.5}
 
-/* Single 9:16 cinema stage */
-#stage{position:relative;width:100vw;height:100vh;height:100dvh;max-width:480px;overflow:hidden;background:#100a1d;box-shadow:0 0 70px rgba(0,0,0,.9)}
-@media (min-width:520px){#stage{height:min(96vh,860px);border-radius:22px;border:1px solid rgba(243,212,138,.3)}}
+/* Phone-only full-screen stage */
+#stage{position:fixed;inset:0;width:100vw;height:100vh;height:100dvh;overflow:hidden;background:#0e081a}
 
-/* Progress bar & controls */
-#prog{position:absolute;top:0;left:0;right:0;height:3px;background:rgba(255,255,255,.16);z-index:40}
+/* Progress bar & minimal phone controls */
+#prog{position:absolute;top:0;left:0;right:0;height:3px;background:rgba(255,255,255,.18);z-index:40}
 #prog i{display:block;height:100%;width:0;background:linear-gradient(90deg,#f3d48a,#fff6d6);transition:width .3s linear}
-#ctrl{position:absolute;top:calc(env(safe-area-inset-top,0px) + 12px);right:12px;z-index:40;display:flex;gap:8px;opacity:0;pointer-events:none;transition:opacity .5s}
-#stage.playing #ctrl{opacity:1;pointer-events:auto}
-#ctrl button{width:36px;height:36px;border-radius:50%;border:1px solid rgba(243,212,138,.55);background:rgba(16,10,30,.62);color:#f3d48a;backdrop-filter:blur(6px);cursor:pointer;font-size:14px;display:grid;place-items:center;padding:0}
+
+#soundPill{position:absolute;top:calc(env(safe-area-inset-top,0px) + 14px);left:14px;z-index:45;background:rgba(16,10,30,.78);color:#f3d48a;border:1px solid rgba(243,212,138,.55);border-radius:999px;padding:.38rem .85rem;font:600 .8rem Lora,serif;cursor:pointer;transition:opacity .4s}
+#soundPill.hide{opacity:0;pointer-events:none}
+
+#ctrl{position:absolute;top:calc(env(safe-area-inset-top,0px) + 12px);right:12px;z-index:40;display:flex;gap:8px}
+#ctrl button{width:36px;height:36px;border-radius:50%;border:1px solid rgba(243,212,138,.5);background:rgba(16,10,30,.72);color:#f3d48a;cursor:pointer;font-size:14px;display:grid;place-items:center;padding:0}
 #ctrl button:active{transform:scale(.92)}
 
-/* Global particles (petals & fireworks) */
+/* Global particles */
 #fx{position:absolute;inset:0;z-index:25;pointer-events:none}
 
 /* Seamless crossfade layers */
-.layer{position:absolute;inset:0;opacity:0;pointer-events:none;transition:opacity 1.3s ease,transform 1.5s ease;display:flex;align-items:center;justify-content:center;text-align:center;overflow:hidden;padding:calc(env(safe-area-inset-top,0px) + 1.4rem) 1.1rem calc(env(safe-area-inset-bottom,0px) + 1.4rem)}
+.layer{position:absolute;inset:0;opacity:0;pointer-events:none;transition:opacity 1s ease;display:flex;align-items:center;justify-content:center;text-align:center;overflow:hidden;padding:calc(env(safe-area-inset-top,0px) + 1.2rem) 1rem calc(env(safe-area-inset-bottom,0px) + 1.2rem);will-change:opacity}
 .layer.active{opacity:1;pointer-events:auto;z-index:10}
 .layer.leaving{opacity:0;z-index:9}
 
-/* Realistic photographic background with slow Ken Burns zoom */
-.bg{position:absolute;inset:-4%;z-index:0;background-size:cover;background-position:center;transform:scale(1);transition:transform 9s ease-out}
-.layer.active .bg{transform:scale(1.08)}
-.bg::after{content:"";position:absolute;inset:0;background:radial-gradient(ellipse at center,rgba(12,7,20,.15) 0,rgba(10,6,18,.58) 100%)}
+/* Fast-rendering background image with instant gradient fallback */
+.bg{position:absolute;inset:0;z-index:0;background:#140c24}
+.bg img{width:100%;height:100%;object-fit:cover;display:block;opacity:0;transition:opacity .5s ease}
+.bg img.loaded{opacity:1}
+.bg::after{content:"";position:absolute;inset:0;background:radial-gradient(ellipse at center,rgba(12,7,20,.14) 0,rgba(10,6,18,.58) 100%)}
 
-.t{position:relative;z-index:12;width:100%;max-width:410px}
+.t{position:relative;z-index:12;width:100%;max-width:400px}
 .sc{font-family:"Great Vibes","Brush Script MT",cursive;font-weight:400;line-height:1.15}
 .pl{font-family:"Playfair Display",Georgia,serif;font-weight:600}
 .hi{font-family:"Tiro Devanagari Hindi","Noto Serif Devanagari",serif}
-.gold{color:#f3d48a}
 
-.rv{opacity:0;transform:translateY(14px);transition:opacity .95s ease,transform .95s ease;transition-delay:calc(var(--i,0) * .5s)}
+.rv{opacity:0;transform:translateY(12px);transition:opacity .85s ease,transform .85s ease;transition-delay:calc(var(--i,0) * .45s)}
 .active .rv{opacity:1;transform:none}
 
-.btn{font:inherit;font-weight:600;cursor:pointer;border:1.5px solid currentColor;background:rgba(20,12,34,.35);color:inherit;padding:.5rem 1.2rem;border-radius:999px;text-decoration:none;display:inline-block;backdrop-filter:blur(6px);font-size:.88rem}
+.btn{font:inherit;font-weight:600;cursor:pointer;border:1.5px solid currentColor;background:rgba(20,12,34,.55);color:inherit;padding:.5rem 1.15rem;border-radius:999px;text-decoration:none;display:inline-block;font-size:.86rem}
 
-/* ================= 0: ROYAL GATE OVER MANDAP AISLE ================= */
-#s0 .bg{background-image:url('bg-gate.png')}
-#s0 .bg::after{background:linear-gradient(180deg,rgba(12,7,20,.45),rgba(12,7,20,.12) 45%,rgba(12,7,20,.65))}
-#s0.zooming{transform:scale(1.26);opacity:0;transition:transform 1.7s cubic-bezier(.4,0,.2,1),opacity 1.3s ease .35s}
+/* ================= 0: GATE OPENING VIDEO ================= */
+#s0{padding:0;background:#000}
+#gateVid{width:100%;height:100%;object-fit:cover;display:block}
 
-.gate-frame{position:absolute;inset:0;z-index:8;pointer-events:none}
-.crown-svg{position:absolute;top:calc(env(safe-area-inset-top,0px) + .35rem);left:50%;width:98%;max-width:470px;transform:translateX(-50%);filter:drop-shadow(0 0 14px rgba(255,220,130,.75))}
-.pillar{position:absolute;top:21%;bottom:12%;width:20px;background:linear-gradient(90deg,#8d6522,#fae4a2 45%,#c7963d 75%,#6e4d17);border:1.5px solid #fff2c2;box-shadow:0 0 18px rgba(255,214,120,.5)}
-.pillar.l{left:2%}.pillar.r{right:2%}
-
-.doors{position:absolute;top:17%;bottom:12%;left:6%;right:6%;display:flex;perspective:1400px;z-index:6}
-.door{position:relative;flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0 .35rem;color:#fff8e6;text-shadow:0 2px 14px rgba(0,0,0,.85),0 0 18px #ffd778;border:4px solid #e9c264;box-shadow:inset 0 0 28px rgba(255,224,140,.5),0 0 24px rgba(255,210,110,.45);background:
-  radial-gradient(circle at 50% 25%,rgba(255,244,200,.22),transparent 52%),
-  repeating-linear-gradient(45deg,rgba(245,212,130,.32) 0 2px,transparent 2px 14px),
-  repeating-linear-gradient(-45deg,rgba(245,212,130,.32) 0 2px,transparent 2px 14px),
-  rgba(28,16,14,.32);
-  backdrop-filter:blur(2px);
-  transition:transform 2.4s cubic-bezier(.55,.05,.2,1);
-  backface-visibility:hidden}
-.door.l{transform-origin:left center;border-radius:100% 0 0 0/18% 0 0 0;border-right-width:2.5px}
-.door.r{transform-origin:right center;border-radius:0 100% 0 0/0 18% 0 0;border-left-width:2.5px}
-.door::before{content:"";position:absolute;inset:8px;border:1.5px solid rgba(255,238,180,.8);border-radius:inherit;pointer-events:none}
-.door .handle{position:absolute;top:52%;width:8px;height:36px;border-radius:6px;background:linear-gradient(#fff4c8,#c48f2b);box-shadow:0 0 10px #ffd97d}
-.door.l .handle{right:10px}.door.r .handle{left:10px}
-.door .big{font-family:"Great Vibes",cursive;font-size:clamp(2rem,8.5vw,2.85rem);line-height:1.05}
-.door small{font:600 .66rem "Playfair Display",serif;letter-spacing:.22em;margin-top:.2rem;color:#ffeec2}
-
-#s0.opened .door.l{transform:rotateY(-112deg)}
-#s0.opened .door.r{transform:rotateY(112deg)}
-
-.gate-foot{position:absolute;bottom:calc(env(safe-area-inset-bottom,0px) + .85rem);left:0;right:0;z-index:15;display:flex;flex-direction:column;align-items:center;gap:.4rem;transition:opacity .6s ease}
-#s0.opened .gate-foot{opacity:0;pointer-events:none}
-.gate-foot .title{font-family:"Playfair Display",serif;font-size:1.15rem;letter-spacing:.22em;color:#fff6dc;text-shadow:0 2px 12px rgba(0,0,0,.9)}
-.gate-foot .gname{font-size:1.7rem;color:#ffe49c;text-shadow:0 2px 10px rgba(0,0,0,.9);min-height:1.1em}
-#openBtn{background:linear-gradient(135deg,#f8df94,#d49c37);color:#2c0e36;border:none;padding:.72rem 1.85rem;border-radius:999px;font:600 .95rem Lora,serif;letter-spacing:.04em;box-shadow:0 6px 24px rgba(243,200,100,.55);cursor:pointer;animation:pulse 2.2s infinite}
-@keyframes pulse{50%{transform:scale(1.05);box-shadow:0 8px 30px rgba(255,220,130,.8)}}
-
-/* ================= 1: ARCHED INVITATION CARD ================= */
-#s1 .bg{background-image:url('bg-invite.png')}
-.card{position:relative;background:rgba(255,252,245,.92);backdrop-filter:blur(8px);color:#4a1d5c;border:3px solid #e9c46a;border-radius:42% 42% 18px 18px/10% 10% 18px 18px;padding:2.4rem 1.35rem 2rem;box-shadow:0 16px 48px rgba(0,0,0,.5),0 0 36px rgba(255,220,150,.35)}
-.card .hi{color:#8a5a12;font-size:.9rem;line-height:1.65;margin-bottom:.3rem}
-.card .host{font-size:.88rem;margin:.65rem 0;color:#3f264f}
-.card .nm{font-size:clamp(2.4rem,9vw,3.1rem);color:#8a1f4a;margin:.2rem 0}
-.card small{display:block;font-size:.8rem;color:#5d4a6d}
-.divider{width:110px;height:2px;margin:1rem auto 0;background:linear-gradient(90deg,transparent,#d4a23e,transparent)}
+/* ================= 1: MAIN INVITATION CARD ================= */
+#s1 .bg{background:linear-gradient(#1a112c,#3b2856 65%,#6a4c7a)}
+.card{position:relative;background:rgba(255,252,245,.94);color:#4a1d5c;border:3px solid #e9c46a;border-radius:42% 42% 18px 18px/10% 10% 18px 18px;padding:2.2rem 1.25rem 1.8rem;box-shadow:0 14px 36px rgba(0,0,0,.45)}
+.card .hi{color:#8a5a12;font-size:.88rem;line-height:1.6;margin-bottom:.25rem}
+.card .host{font-size:.86rem;margin:.6rem 0;color:#3f264f}
+.card .nm{font-size:clamp(2.3rem,10vw,3rem);color:#8a1f4a;margin:.15rem 0}
+.card small{display:block;font-size:.78rem;color:#5d4a6d}
+.divider{width:100px;height:2px;margin:.95rem auto 0;background:linear-gradient(90deg,transparent,#d4a23e,transparent)}
 
 /* ================= 2: SATSANG ================= */
-#s2 .bg{background-image:url('bg-satsang.png')}
-#s2 .bg::after{background:radial-gradient(ellipse at center,rgba(255,244,236,.42) 0,rgba(120,55,40,.28) 100%)}
-.glass-light{background:rgba(255,250,244,.78);backdrop-filter:blur(8px);border:1.5px solid rgba(217,164,65,.55);border-radius:24px;padding:1.8rem 1.3rem;box-shadow:0 14px 36px rgba(90,35,20,.2);color:#9c3510}
-#s2 h2{font-size:3.3rem;margin:0;color:#b83a0b}
-.dt{display:flex;align-items:center;justify-content:center;gap:.8rem;margin:.5rem 0}
-.dt b{font:600 2.7rem "Playfair Display",serif;color:#b83a0b}
-.dt span{border-top:1px solid #d9a441;border-bottom:1px solid #d9a441;padding:.1rem .8rem;color:#7a3e14}
-#s2 .btn{background:rgba(184,58,11,.1);color:#9c3510;border-color:#b83a0b}
+#s2 .bg{background:linear-gradient(160deg,#fde2ec,#efe0f8 48%,#ffe9d2)}
+#s2 .bg::after{background:radial-gradient(ellipse at center,rgba(255,244,236,.35) 0,rgba(120,55,40,.28) 100%)}
+.glass-light{background:rgba(255,250,244,.86);border:1.5px solid rgba(217,164,65,.6);border-radius:22px;padding:1.65rem 1.2rem;box-shadow:0 12px 30px rgba(90,35,20,.2);color:#9c3510}
+#s2 h2{font-size:3.1rem;margin:0;color:#b83a0b}
+.dt{display:flex;align-items:center;justify-content:center;gap:.75rem;margin:.45rem 0}
+.dt b{font:600 2.6rem "Playfair Display",serif;color:#b83a0b}
+.dt span{border-top:1px solid #d9a441;border-bottom:1px solid #d9a441;padding:.1rem .75rem;color:#7a3e14}
+#s2 .btn{background:rgba(184,58,11,.12);color:#9c3510;border-color:#b83a0b}
 
 /* ================= 3 & 4: SANGEET & WEDDING ================= */
-#s3 .bg{background-image:url('bg-sangeet.png')}
-#s4 .bg{background-image:url('bg-wedding.png')}
-.glass-dark{background:rgba(10,16,42,.56);backdrop-filter:blur(7px);border:1px solid rgba(243,212,138,.42);border-radius:24px;padding:1.6rem 1.25rem;box-shadow:0 14px 40px rgba(0,0,0,.45);color:#f3d48a}
-.glass-dark h2{font-size:3rem;margin:0;text-shadow:0 2px 14px rgba(0,0,0,.6)}
+#s3 .bg,#s4 .bg{background:linear-gradient(#050b2a,#0f2563 62%,#1b3b86)}
+.glass-dark{background:rgba(10,16,42,.74);border:1px solid rgba(243,212,138,.45);border-radius:22px;padding:1.5rem 1.15rem;box-shadow:0 12px 32px rgba(0,0,0,.45);color:#f3d48a}
+.glass-dark h2{font-size:2.9rem;margin:0}
 .glass-dark .dt span{border-color:#f3d48a;color:#fdeab0}
 .glass-dark .dt b{color:#ffe08a}
-.glass-dark p{margin:.2rem 0;color:#fff4d4}
+.glass-dark p{margin:.18rem 0;color:#fff4d4;font-size:.94rem}
 
 /* ================= 5: GARDEN FINALE ================= */
-#s5{overflow-y:auto;align-items:flex-start;padding-top:calc(env(safe-area-inset-top,0px) + 3.2rem)}
-#s5 .bg{position:fixed;background-image:url('bg-garden.png')}
-#s5 .bg::after{background:linear-gradient(180deg,rgba(255,250,242,.28),rgba(20,30,40,.35))}
-.card2{position:relative;background:rgba(255,253,249,.84);backdrop-filter:blur(8px);color:#4a1d5c;border-radius:16px;padding:1rem .9rem;margin:.6rem 0;border:1px solid rgba(217,164,65,.38);box-shadow:0 8px 24px rgba(0,0,0,.14)}
-.card2 h3{margin:0 0 .25rem;font:600 1rem "Playfair Display",serif;color:#7a1f4a}
-.card2 p{margin:.1rem 0;font-size:.92rem}
+#s5{overflow-y:auto;align-items:flex-start;padding-top:calc(env(safe-area-inset-top,0px) + 3.4rem)}
+#s5 .bg{position:fixed;background:linear-gradient(#bcd0e6,#f6e5c8 55%,#e4cfae)}
+#s5 .bg::after{background:linear-gradient(180deg,rgba(255,250,242,.25),rgba(20,30,40,.38))}
+.card2{position:relative;background:rgba(255,253,249,.9);color:#4a1d5c;border-radius:16px;padding:.95rem .85rem;margin:.55rem 0;border:1px solid rgba(217,164,65,.4);box-shadow:0 6px 20px rgba(0,0,0,.14)}
+.card2 h3{margin:0 0 .2rem;font:600 .98rem "Playfair Display",serif;color:#7a1f4a}
+.card2 p{margin:.1rem 0;font-size:.9rem}
 .cd{display:grid;grid-template-columns:repeat(4,1fr);gap:.35rem}
-.cd b{display:block;font:600 1.55rem "Playfair Display",serif;color:#7a1f4a;font-variant-numeric:tabular-nums}
-.cd small{color:#5d4a6d;font-size:.75rem}
-.cols{display:grid;grid-template-columns:1fr 1fr;gap:.55rem}
+.cd b{display:block;font:600 1.45rem "Playfair Display",serif;color:#7a1f4a;font-variant-numeric:tabular-nums}
+.cd small{color:#5d4a6d;font-size:.72rem}
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:.5rem}
 details{margin-top:.55rem;text-align:left;color:#3a1b57}
-summary{cursor:pointer;text-align:center;font-size:.88rem;color:#fff;text-shadow:0 1px 6px rgba(0,0,0,.7);font-weight:600}
-.tools{background:rgba(255,255,255,.92);border-radius:14px;padding:.9rem;margin-top:.5rem}
+summary{cursor:pointer;text-align:center;font-size:.86rem;color:#fff;text-shadow:0 1px 6px rgba(0,0,0,.75);font-weight:600}
+.tools{background:rgba(255,255,255,.94);border-radius:14px;padding:.85rem;margin-top:.5rem}
 .tools input{font:inherit;width:100%;padding:.48rem .65rem;border:1.5px solid #cdb8e6;border-radius:8px;margin:.3rem 0;color:#2a1f3d;background:#fff}
-.tools button{color:#4a1d5c;background:#efe4fb;border:1px solid #cdb8e6;border-radius:999px;padding:.45rem 1rem;font:600 .85rem Lora,serif;cursor:pointer;margin:.25rem .25rem 0 0}
-#toast{min-height:1.2rem;font-weight:600;color:#7a1f4a;font-size:.85rem}
+.tools button{color:#4a1d5c;background:#efe4fb;border:1px solid #cdb8e6;border-radius:999px;padding:.45rem 1rem;font:600 .84rem Lora,serif;cursor:pointer;margin:.25rem .25rem 0 0}
+#toast{min-height:1.2rem;font-weight:600;color:#7a1f4a;font-size:.84rem}
 
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition-duration:.01s!important;transition-delay:0s!important}}
 </style>
 </head>
 <body>
 
-<!-- Background music directly from your reference video -->
+<!-- Background music from your reference video -->
 <audio id="bgm" loop playsinline preload="auto">
   <source src="VID-20261125-WA0044.mp4" type="video/mp4">
 </audio>
 
 <div id="stage">
   <div id="prog"><i id="progBar"></i></div>
+  <button id="soundPill" aria-label="Enable music">Tap for sound 🔇</button>
   <div id="ctrl">
-    <button id="muteBtn" aria-label="Toggle music" title="Music">🔊</button>
+    <button id="muteBtn" aria-label="Toggle music" title="Music">🔇</button>
     <button id="playBtn" aria-label="Pause or play" title="Pause/Play">⏸</button>
     <button id="replayBtn" aria-label="Replay invitation" title="Replay">↻</button>
   </div>
   <canvas id="fx"></canvas>
 
-  <!-- 0: ROYAL GATE -->
-  <section class="layer active" id="s0" data-fx="petals" data-dur="0">
-    <div class="bg"></div>
-
-    <div class="gate-frame">
-      <svg class="crown-svg" viewBox="0 0 460 145" fill="none" aria-hidden="true">
-        <defs>
-          <linearGradient id="gGold" x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0%" stop-color="#fff4c4"/>
-            <stop offset="50%" stop-color="#e8b854"/>
-            <stop offset="100%" stop-color="#a87420"/>
-          </linearGradient>
-        </defs>
-        <path d="M18 138C18 68 85 36 155 44c28 3 48 16 75 16s47-13 75-16c70-8 137 24 137 94" stroke="url(#gGold)" stroke-width="5"/>
-        <path d="M46 138C46 84 98 58 158 62c25 2 45 12 72 12s47-10 72-12c60-4 112 22 112 76" stroke="#fff0b8" stroke-width="2"/>
-        <path d="M192 52L230 14l38 38-38 22z" fill="url(#gGold)" stroke="#fff7d6" stroke-width="2"/>
-        <polygon points="230,22 246,44 230,62 214,44" fill="#d9ecff" stroke="#fff" stroke-width="1.5"/>
-        <line x1="230" y1="74" x2="230" y2="96" stroke="#fff3c4" stroke-width="2"/>
-        <polygon points="230,94 244,114 230,136 216,114" fill="#eef7ff" stroke="#fff" stroke-width="2"/>
-        <g fill="#fff8de">
-          <circle cx="95" cy="60" r="3.5"/><circle cx="135" cy="46" r="4"/><circle cx="178" cy="48" r="3.5"/>
-          <circle cx="282" cy="48" r="3.5"/><circle cx="325" cy="46" r="4"/><circle cx="365" cy="60" r="3.5"/>
-        </g>
-      </svg>
-      <div class="pillar l"></div>
-      <div class="pillar r"></div>
-    </div>
-
-    <div class="doors">
-      <div class="door l">
-        <span class="big">Welcome</span>
-        <small>TO OUR WEDDING</small>
-        <span class="handle"></span>
-      </div>
-      <div class="door r">
-        <span class="big">Together</span>
-        <small>FOREVER</small>
-        <span class="handle"></span>
-      </div>
-    </div>
-
-    <div class="gate-foot">
-      <div class="sc gname" id="gName"></div>
-      <div class="title">WEDDING INVITATION</div>
-      <button id="openBtn">Tap to Open Invitation</button>
-    </div>
+  <!-- 0: GATE OPENING VIDEO (plays immediately, no landing page) -->
+  <section class="layer active" id="s0" data-fx="" data-dur="0">
+    <video id="gateVid" autoplay muted playsinline preload="auto">
+      <source src="video_1.mp4" type="video/mp4">
+    </video>
   </section>
 
   <!-- 1: MAIN INVITATION -->
-  <section class="layer" id="s1" data-fx="petals" data-dur="8000">
-    <div class="bg"></div>
+  <section class="layer" id="s1" data-fx="petals" data-dur="7500">
+    <div class="bg"><img data-bg="bg-invite" alt="" decoding="async"></div>
     <div class="t">
       <div class="card">
         <div class="hi rv" style="--i:0">॥ श्री गणेशाय नमः ॥</div>
         <div class="host rv" style="--i:1"><b>Smt. Sarla Rani &amp; Sh. Sanjeev Khurana</b><br>cordially invite <span id="heroGuest">you</span> to bless &amp; grace the joyous and auspicious occasion of the Wedding Ceremony of their loving son</div>
         <div class="sc nm rv" style="--i:2">Vishal (Vishu)</div>
         <small class="rv" style="--i:3">Grand S/o Late Smt. Sudesh Rani &amp; Late Sh. Sardari Lal Khurana</small>
-        <div class="sc rv" style="--i:4;font-size:1.65rem;color:#a87a22">with</div>
+        <div class="sc rv" style="--i:4;font-size:1.6rem;color:#a87a22">with</div>
         <div class="sc nm rv" style="--i:5">Priya</div>
         <small class="rv" style="--i:6">(D/o Smt. Sangeeta Pahwa &amp; Sh. Rajesh Pahwa of Hisar)</small>
         <div class="divider rv" style="--i:7"></div>
@@ -215,23 +143,23 @@ summary{cursor:pointer;text-align:center;font-size:.88rem;color:#fff;text-shadow
   </section>
 
   <!-- 2: SATSANG -->
-  <section class="layer" id="s2" data-fx="petals" data-dur="7000">
-    <div class="bg"></div>
+  <section class="layer" id="s2" data-fx="petals" data-dur="6800">
+    <div class="bg"><img data-bg="bg-satsang" alt="" decoding="async"></div>
     <div class="t">
       <div class="glass-light">
         <h2 class="sc rv" style="--i:0">Satsang</h2>
         <div class="rv" style="--i:1;font-weight:600">December</div>
         <div class="dt rv" style="--i:2"><span>Friday</span><b>11</b><span>2026</span></div>
-        <p class="pl rv" style="--i:3;margin:.5rem 0 0">Time : 3 to 6 P.M.</p>
-        <p class="rv" style="--i:4;margin:0 0 1rem">(At Our Residence)</p>
+        <p class="pl rv" style="--i:3;margin:.45rem 0 0">Time : 3 to 6 P.M.</p>
+        <p class="rv" style="--i:4;margin:0 0 .9rem">(At Our Residence)</p>
         <a class="btn rv" style="--i:5" target="_blank" rel="noopener" href="https://calendar.google.com/calendar/render?action=TEMPLATE&text=Satsang%20%E2%80%93%20Vishal%20%26%20Priya&dates=20261211T150000/20261211T180000&ctz=Asia/Kolkata&location=Khurana%20Residence">Add to calendar</a>
       </div>
     </div>
   </section>
 
   <!-- 3: LADIES SANGEET -->
-  <section class="layer" id="s3" data-fx="fire" data-dur="7000">
-    <div class="bg"></div>
+  <section class="layer" id="s3" data-fx="fire" data-dur="6800">
+    <div class="bg"><img data-bg="bg-sangeet" alt="" decoding="async"></div>
     <div class="t">
       <div class="glass-dark">
         <h2 class="sc rv" style="--i:0">Ladies Sangeet</h2>
@@ -244,8 +172,8 @@ summary{cursor:pointer;text-align:center;font-size:.88rem;color:#fff;text-shadow
   </section>
 
   <!-- 4: WEDDING -->
-  <section class="layer" id="s4" data-fx="fire" data-dur="8500">
-    <div class="bg"></div>
+  <section class="layer" id="s4" data-fx="fire" data-dur="8000">
+    <div class="bg"><img data-bg="bg-wedding" alt="" decoding="async"></div>
     <div class="t">
       <div class="glass-dark">
         <h2 class="sc rv" style="--i:0">Wedding</h2>
@@ -254,9 +182,9 @@ summary{cursor:pointer;text-align:center;font-size:.88rem;color:#fff;text-shadow
         <p class="rv" style="--i:3">Sehra Bandi : <b>6:15 P.M.</b></p>
         <p class="rv" style="--i:4">Departure of Barat : <b>7:15 P.M.</b></p>
         <p class="rv" style="--i:5">Dinner : <b>8:15 P.M.</b></p>
-        <div class="sc rv" style="--i:6;font-size:2rem;margin-top:.35rem">Venue</div>
-        <p class="rv pl" style="--i:7;font-size:1.1rem">Hisar Haveli<br><span style="font-weight:400;font-size:.9rem">Near Mayer Toll, Hansi</span></p>
-        <div class="rv" style="--i:8;margin-top:.65rem">
+        <div class="sc rv" style="--i:6;font-size:1.9rem;margin-top:.3rem">Venue</div>
+        <p class="rv pl" style="--i:7;font-size:1.05rem">Hisar Haveli<br><span style="font-weight:400;font-size:.88rem">Near Mayer Toll, Hansi</span></p>
+        <div class="rv" style="--i:8;margin-top:.6rem">
           <a class="btn" target="_blank" rel="noopener" href="https://www.google.com/maps/dir/?api=1&destination=Hisar%20Haveli%20Near%20Mayer%20Toll%20Hansi">Directions</a>
           <a class="btn" target="_blank" rel="noopener" href="https://calendar.google.com/calendar/render?action=TEMPLATE&text=Wedding%20%E2%80%93%20Vishal%20%26%20Priya&dates=20261212T181500/20261212T230000&ctz=Asia/Kolkata&location=Hisar%20Haveli%2C%20Near%20Mayer%20Toll%2C%20Hansi">Calendar</a>
         </div>
@@ -266,25 +194,32 @@ summary{cursor:pointer;text-align:center;font-size:.88rem;color:#fff;text-shadow
 
   <!-- 5: GARDEN FINALE -->
   <section class="layer" id="s5" data-fx="" data-dur="0">
-    <div class="bg"></div>
+    <div class="bg"><img data-bg="bg-garden" alt="" decoding="async"></div>
     <div class="t">
-      <div class="sc rv" style="--i:0;font-size:2.4rem;color:#fff;text-shadow:0 2px 12px rgba(0,0,0,.55)">With best compliments</div>
-      <div class="card2 rv" style="--i:1"><p>Special invitation by the shining stars of our family</p><p class="pl" style="color:#7a1f4a;font-size:1.1rem">Tashvi, Nohar, Mivaan</p></div>
+      <div class="sc rv" style="--i:0;font-size:2.3rem;color:#fff;text-shadow:0 2px 12px rgba(0,0,0,.6)">With best compliments</div>
+      <div class="card2 rv" style="--i:1"><p>Special invitation by the shining stars of our family</p><p class="pl" style="color:#7a1f4a;font-size:1.05rem">Tashvi, Nohar, Mivaan</p></div>
       <div class="cols rv" style="--i:2">
-        <div class="card2"><h3>R.S.V.P.</h3><p>Keshav Arora</p><p>Jatin Chhabra</p><p>Manoj Khurana</p><p>Satish Khurana</p><p style="margin-top:.35rem"><i>Shefali–Keshav<br>Shilpa–Jatin</i></p></div>
+        <div class="card2"><h3>R.S.V.P.</h3><p>Keshav Arora</p><p>Jatin Chhabra</p><p>Manoj Khurana</p><p>Satish Khurana</p><p style="margin-top:.3rem"><i>Shefali–Keshav<br>Shilpa–Jatin</i></p></div>
         <div class="card2"><h3>Best Compliments</h3><p>Khurana Family</p><p>Chhabra Family</p><p>Sidhar Family</p><p>Sapra Family</p><p>Relatives &amp; Friends</p></div>
       </div>
       <div class="card2 rv" style="--i:3">
         <h3>Counting the moments</h3>
         <div class="cd"><div><b id="d">–</b><small>days</small></div><div><b id="h">–</b><small>hours</small></div><div><b id="m">–</b><small>mins</small></div><div><b id="s">–</b><small>secs</small></div></div>
-        <p id="cdnote" style="font-size:.82rem;color:#5d4a6d"></p>
+        <p id="cdnote" style="font-size:.8rem;color:#5d4a6d"></p>
+      </div>
+      <details class="rv" style="--i:4"><summary>Family tools: make a personal invite link</summary>
+        <div class="tools"><label for="gIn">Guest or family name</label><input type="text" id="gIn" placeholder="e.g. Rahul Sharma and family"><input type="text" id="gLink" readonly aria-label="Personal invitation link">
+        <button id="shareWa">Send on WhatsApp</button><button id="copyLink">Copy link</button><div id="toast" role="status"></div></div>
+      </details>
+    </div>
   </section>
 </div>
 
 <script>
 (function(){
   var $=function(i){return document.getElementById(i)};
-  var stage=$('stage'),bgm=$('bgm'),progBar=$('progBar');
+  var stage=$('stage'),bgm=$('bgm'),gateVid=$('gateVid'),progBar=$('progBar');
+  var soundPill=$('soundPill'),muteBtn=$('muteBtn'),playBtn=$('playBtn');
   var layers=[].slice.call(document.querySelectorAll('.layer'));
   var reduce=matchMedia('(prefers-reduced-motion:reduce)').matches;
   var base=location.href.split('#')[0];
@@ -293,29 +228,51 @@ summary{cursor:pointer;text-align:center;font-size:.88rem;color:#fff;text-shadow
   function applyGuest(){
     var raw='';try{raw=decodeURIComponent(location.hash.slice(1))}catch(e){}
     var n=raw.replace(/[^A-Za-z0-9\- ]/g,'').replace(/-+/g,' ').trim().split(' ').map(function(w){return w?w[0].toUpperCase()+w.slice(1):''}).join(' ');
-    $('gName').textContent=n?'Dear '+n:'';
     $('heroGuest').textContent=n||'you';
   }
   applyGuest();addEventListener('hashchange',applyGuest);
 
-  /* Rose petals & fireworks */
-  var cv=$('fx'),cx=cv.getContext('2d'),W=0,H=0,mode='petals',P=[],nb=0,raf=0;
+  /* Fast background preloader: tries lightweight .jpg first, falls back to .png, decodes during gate video */
+  document.querySelectorAll('img[data-bg]').forEach(function(img){
+    var name=img.dataset.bg;
+    function done(){img.classList.add('loaded')}
+    img.onload=function(){if(img.decode){img.decode().then(done,done)}else{done()}};
+    img.onerror=function(){
+      if(img.src.indexOf('.jpg')>-1){img.src=name+'.png'}
+    };
+    img.src=name+'.jpg';
+  });
+
+  /* Unmute & start background music on first tap anywhere */
+  var audioStarted=false;
+  function enableAudio(){
+    if(audioStarted)return;
+    audioStarted=true;
+    bgm.muted=false;
+    bgm.play().then(function(){
+      soundPill.classList.add('hide');
+      muteBtn.textContent='🔊';
+    }).catch(function(){audioStarted=false});
+  }
+  document.addEventListener('pointerdown',enableAudio,{passive:true});
+
+  /* Rose petals & fireworks (lighter particle count for smooth phone FPS) */
+  var cv=$('fx'),cx=cv.getContext('2d'),W=0,H=0,mode='',P=[],nb=0,raf=0;
   function rs(){W=cv.width=stage.clientWidth;H=cv.height=stage.clientHeight}
   rs();addEventListener('resize',rs);
-  function petal(top){return{x:Math.random()*W,y:top?-20:Math.random()*H,s:6+Math.random()*7,v:.7+Math.random()*1.4,w:Math.random()*6,a:Math.random()*6,c:['#d81b3c','#e8456b','#b3122f','#ff8aa3'][Math.random()*4|0]}}
-  function burst(){var x=W*(.18+Math.random()*.64),y=H*(.12+Math.random()*.3),hu=Math.random()*360;for(var j=0;j<42;j++){var a=j/42*6.283,v=1.3+Math.random()*2.2;P.push({x:x,y:y,vx:Math.cos(a)*v,vy:Math.sin(a)*v,l:1,h:hu})}}
+  function petal(top){return{x:Math.random()*W,y:top?-20:Math.random()*H,s:5+Math.random()*6,v:.7+Math.random()*1.3,w:Math.random()*6,a:Math.random()*6,c:['#d81b3c','#e8456b','#b3122f','#ff8aa3'][Math.random()*4|0]}}
+  function burst(){var x=W*(.18+Math.random()*.64),y=H*(.12+Math.random()*.3),hu=Math.random()*360;for(var j=0;j<28;j++){var a=j/28*6.283,v=1.3+Math.random()*2.1;P.push({x:x,y:y,vx:Math.cos(a)*v,vy:Math.sin(a)*v,l:1,h:hu})}}
   function loop(t){
     cx.clearRect(0,0,W,H);
     if(mode==='petals'){P.forEach(function(p){p.y+=p.v;p.x+=Math.sin(p.w+=.03)*.8;p.a+=.04;if(p.y>H+20)Object.assign(p,petal(true));cx.save();cx.translate(p.x,p.y);cx.rotate(p.a);cx.fillStyle=p.c;cx.beginPath();cx.ellipse(0,0,p.s,p.s*.55,0,0,6.283);cx.fill();cx.restore()})}
-    else if(mode==='fire'){if(t-nb>1050){burst();nb=t}P=P.filter(function(p){return p.l>0});P.forEach(function(p){p.x+=p.vx;p.y+=p.vy;p.vy+=.03;p.vx*=.985;p.l-=.012;cx.globalAlpha=Math.max(p.l,0);cx.fillStyle='hsl('+p.h+',100%,65%)';cx.fillRect(p.x,p.y,2.6,2.6)});cx.globalAlpha=1}
+    else if(mode==='fire'){if(t-nb>1150){burst();nb=t}P=P.filter(function(p){return p.l>0});P.forEach(function(p){p.x+=p.vx;p.y+=p.vy;p.vy+=.03;p.vx*=.985;p.l-=.014;cx.globalAlpha=Math.max(p.l,0);cx.fillStyle='hsl('+p.h+',100%,65%)';cx.fillRect(p.x,p.y,2.4,2.4)});cx.globalAlpha=1}
     raf=mode?requestAnimationFrame(loop):0;
   }
   function setMode(m){
     if(reduce)m='';if(m===mode&&raf)return;mode=m;P=[];cx.clearRect(0,0,W,H);
-    if(m==='petals')for(var j=0;j<38;j++)P.push(petal(false));
+    if(m==='petals')for(var j=0;j<24;j++)P.push(petal(false));
     if(m&&!raf)raf=requestAnimationFrame(loop);
   }
-  setMode('petals');
 
   /* Continuous video timeline */
   var cur=0,timer=0,paused=false;
@@ -336,36 +293,33 @@ summary{cursor:pointer;text-align:center;font-size:.88rem;color:#fff;text-shadow
     }
   }
 
-  /* Open gate -> start music -> zoom through into invitation */
-  $('openBtn').onclick=function(){
-    stage.classList.add('playing');
-    bgm.currentTime=0;
-    bgm.play().catch(function(){});
-    $('s0').classList.add('opened');
-    setTimeout(function(){$('s0').classList.add('zooming')},1400);
-    setTimeout(function(){showLayer(1)},2300);
-  };
+  /* Gate video ends -> seamlessly enter Scene 1 */
+  gateVid.addEventListener('ended',function(){showLayer(1)});
+  /* Safety fallback in case video fails to autoplay */
+  gateVid.play().catch(function(){setTimeout(function(){if(cur===0)showLayer(1)},7200)});
 
-  /* Video controls */
-  $('muteBtn').onclick=function(){
+  /* Controls */
+  muteBtn.onclick=function(e){
+    e.stopPropagation();
+    if(!audioStarted){enableAudio();return}
     bgm.muted=!bgm.muted;
     this.textContent=bgm.muted?'🔇':'🔊';
   };
-  $('playBtn').onclick=function(){
+  playBtn.onclick=function(e){
+    e.stopPropagation();
     paused=!paused;
     this.textContent=paused?'▶':'⏸';
+    if(cur===0){paused?gateVid.pause():gateVid.play()}
     if(paused){clearTimeout(timer);bgm.pause()}
-    else{bgm.play().catch(function(){});var dur=+layers[cur].dataset.dur||0;if(dur>0)timer=setTimeout(function(){showLayer(cur+1)},dur/2)}
+    else{if(audioStarted&&!bgm.muted)bgm.play().catch(function(){});var dur=+layers[cur].dataset.dur||0;if(dur>0)timer=setTimeout(function(){showLayer(cur+1)},dur/2)}
   };
-  $('replayBtn').onclick=function(){
-    paused=false;$('playBtn').textContent='⏸';
+  $('replayBtn').onclick=function(e){
+    e.stopPropagation();
+    paused=false;playBtn.textContent='⏸';
     clearTimeout(timer);
-    $('s0').classList.remove('opened','zooming');
     showLayer(0);
-    bgm.currentTime=0;bgm.play().catch(function(){});
-    setTimeout(function(){$('s0').classList.add('opened')},400);
-    setTimeout(function(){$('s0').classList.add('zooming')},1800);
-    setTimeout(function(){showLayer(1)},2700);
+    gateVid.currentTime=0;gateVid.play().catch(function(){});
+    if(audioStarted){bgm.currentTime=0;if(!bgm.muted)bgm.play().catch(function(){})}
   };
 
   /* Countdown */
@@ -374,8 +328,7 @@ summary{cursor:pointer;text-align:center;font-size:.88rem;color:#fff;text-shadow
   function tick(){
     var now=Date.now(),df=t0-now;
     if(df<=0){$('cdnote').textContent=now<t1?'The celebrations are underway. Join us!':'Thank you for your blessings and wishes.';['d','h','m','s'].forEach(function(k){$(k).textContent='0'});return}
-    var s=Math.floor(df/1000);$('d').textContent=Math.floor(s/86400);$('h').textContent=pad(Math.floor(s%86400/3600));$('m').textContent=pad(Math.floor(s%3600/60));$('s').textContent=pad(s%60);
-    $('cdnote').textContent='until the Satsang begins on 11th December';
+    var s=Math.floor(df/1000);$('d').textContent=Math.floor(s/86400);$('h').textContent=pad(Math.floor(s\%86400/3600));$('m').textContent=pad(Math.floor(s%3600/60));$('s').textContent=pad(s\%60);$('cdnote').textContent='until the Satsang begins on 11th December';
   }
   tick();setInterval(tick,1000);
 
@@ -383,14 +336,4 @@ summary{cursor:pointer;text-align:center;font-size:.88rem;color:#fff;text-shadow
   function toast(m){$('toast').textContent=m;clearTimeout(toast.t);toast.t=setTimeout(function(){$('toast').textContent=''},3500)}
   function copy(text,msg){
     function fb(){var ta=document.createElement('textarea');ta.value=text;ta.style.cssText='position:fixed;opacity:0';document.body.appendChild(ta);ta.select();var ok=false;try{ok=document.execCommand('copy')}catch(e){}document.body.removeChild(ta);toast(ok?msg:'Could not copy.')}
-    try{navigator.clipboard&&navigator.clipboard.writeText?navigator.clipboard.writeText(text).then(function(){toast(msg)},fb):fb()}catch(e){fb()}
-  }
-  function slug(n){return n.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'')}
-  function link(){var s=slug($('gIn').value);return s?base+'#'+s:base}
-  $('gIn').oninput=function(){$('gLink').value=link()};$('gLink').value=link();
-  $('shareWa').onclick=function(){var n=$('gIn').value.trim();open('https://wa.me/?text='+encodeURIComponent((n?'Dear '+n+',\n\n':'')+'With the blessings of Lord Ganesha, Smt. Sarla Rani and Sh. Sanjeev Khurana cordially invite you to the wedding of their son Vishal (Vishu) with Priya on 11th and 12th December 2026 at Hisar Haveli, Near Mayer Toll, Hansi.\n\nSee your invitation here:\n'+link()),'_blank','noopener')};
-  $('copyLink').onclick=function(){copy(link(),'Link copied.')};
-})();
-</script>
-</body>
-</html>
+    try{navigator.clipboard&&navigator.clipboard.writeText?navigator.clipboard.writeText(text).then(function(){toast(msg)},
