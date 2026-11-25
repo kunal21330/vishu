@@ -8,13 +8,11 @@
 <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Lora:ital,wght@0,400;0,600;1,400&family=Playfair+Display:wght@500;600;700&family=Tiro+Devanagari+Hindi&display=swap" rel="stylesheet">
 <style>
 *{box-sizing:border-box}
-html,body{margin:0;width:100%;height:100%;background:#090611;overflow:hidden;user-select:none;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;width:100%;height:100%;background:#120b20;overflow:hidden;user-select:none;-webkit-tap-highlight-color:transparent}
 body{font-family:Lora,Georgia,serif;color:#fff;line-height:1.5}
 
-/* Phone-only full-screen stage */
-#stage{position:fixed;inset:0;width:100vw;height:100vh;height:100dvh;overflow:hidden;background:#0e081a}
+#stage{position:fixed;inset:0;width:100vw;height:100vh;height:100dvh;overflow:hidden;background:#120b20}
 
-/* Progress bar & minimal phone controls */
 #prog{position:absolute;top:0;left:0;right:0;height:3px;background:rgba(255,255,255,.18);z-index:40}
 #prog i{display:block;height:100%;width:0;background:linear-gradient(90deg,#f3d48a,#fff6d6);transition:width .3s linear}
 
@@ -25,17 +23,14 @@ body{font-family:Lora,Georgia,serif;color:#fff;line-height:1.5}
 #ctrl button{width:36px;height:36px;border-radius:50%;border:1px solid rgba(243,212,138,.5);background:rgba(16,10,30,.72);color:#f3d48a;cursor:pointer;font-size:14px;display:grid;place-items:center;padding:0}
 #ctrl button:active{transform:scale(.92)}
 
-/* Global particles */
 #fx{position:absolute;inset:0;z-index:25;pointer-events:none}
 
-/* Seamless crossfade layers */
-.layer{position:absolute;inset:0;opacity:0;pointer-events:none;transition:opacity 1s ease;display:flex;align-items:center;justify-content:center;text-align:center;overflow:hidden;padding:calc(env(safe-area-inset-top,0px) + 1.2rem) 1rem calc(env(safe-area-inset-bottom,0px) + 1.2rem);will-change:opacity}
+.layer{position:absolute;inset:0;opacity:0;pointer-events:none;transition:opacity .9s ease;display:flex;align-items:center;justify-content:center;text-align:center;overflow:hidden;padding:calc(env(safe-area-inset-top,0px) + 1.2rem) 1rem calc(env(safe-area-inset-bottom,0px) + 1.2rem);will-change:opacity}
 .layer.active{opacity:1;pointer-events:auto;z-index:10}
 .layer.leaving{opacity:0;z-index:9}
 
-/* Fast-rendering background image with instant gradient fallback */
-.bg{position:absolute;inset:0;z-index:0;background:#140c24}
-.bg img{width:100%;height:100%;object-fit:cover;display:block;opacity:0;transition:opacity .5s ease}
+.bg{position:absolute;inset:0;z-index:0;background:#1a112c}
+.bg img{width:100%;height:100%;object-fit:cover;display:block;opacity:0;transition:opacity .45s ease}
 .bg img.loaded{opacity:1}
 .bg::after{content:"";position:absolute;inset:0;background:radial-gradient(ellipse at center,rgba(12,7,20,.14) 0,rgba(10,6,18,.58) 100%)}
 
@@ -49,11 +44,13 @@ body{font-family:Lora,Georgia,serif;color:#fff;line-height:1.5}
 
 .btn{font:inherit;font-weight:600;cursor:pointer;border:1.5px solid currentColor;background:rgba(20,12,34,.55);color:inherit;padding:.5rem 1.15rem;border-radius:999px;text-decoration:none;display:inline-block;font-size:.86rem}
 
-/* ================= 0: GATE OPENING VIDEO ================= */
-#s0{padding:0;background:#000}
-#gateVid{width:100%;height:100%;object-fit:cover;display:block}
+/* 0: GATE VIDEO */
+#s0{padding:0;background:#1a112c}
+#gateVid{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center;display:block;background:#1a112c}
+#tapFallback{position:relative;z-index:15;display:none;background:linear-gradient(135deg,#f8df94,#d49c37);color:#2c0e36;border:none;padding:.8rem 1.8rem;border-radius:999px;font:600 1rem Lora,serif;box-shadow:0 8px 28px rgba(0,0,0,.55);cursor:pointer}
+#tapFallback.show{display:inline-block}
 
-/* ================= 1: MAIN INVITATION CARD ================= */
+/* 1: MAIN INVITATION */
 #s1 .bg{background:linear-gradient(#1a112c,#3b2856 65%,#6a4c7a)}
 .card{position:relative;background:rgba(255,252,245,.94);color:#4a1d5c;border:3px solid #e9c46a;border-radius:42% 42% 18px 18px/10% 10% 18px 18px;padding:2.2rem 1.25rem 1.8rem;box-shadow:0 14px 36px rgba(0,0,0,.45)}
 .card .hi{color:#8a5a12;font-size:.88rem;line-height:1.6;margin-bottom:.25rem}
@@ -62,7 +59,7 @@ body{font-family:Lora,Georgia,serif;color:#fff;line-height:1.5}
 .card small{display:block;font-size:.78rem;color:#5d4a6d}
 .divider{width:100px;height:2px;margin:.95rem auto 0;background:linear-gradient(90deg,transparent,#d4a23e,transparent)}
 
-/* ================= 2: SATSANG ================= */
+/* 2: SATSANG */
 #s2 .bg{background:linear-gradient(160deg,#fde2ec,#efe0f8 48%,#ffe9d2)}
 #s2 .bg::after{background:radial-gradient(ellipse at center,rgba(255,244,236,.35) 0,rgba(120,55,40,.28) 100%)}
 .glass-light{background:rgba(255,250,244,.86);border:1.5px solid rgba(217,164,65,.6);border-radius:22px;padding:1.65rem 1.2rem;box-shadow:0 12px 30px rgba(90,35,20,.2);color:#9c3510}
@@ -72,7 +69,7 @@ body{font-family:Lora,Georgia,serif;color:#fff;line-height:1.5}
 .dt span{border-top:1px solid #d9a441;border-bottom:1px solid #d9a441;padding:.1rem .75rem;color:#7a3e14}
 #s2 .btn{background:rgba(184,58,11,.12);color:#9c3510;border-color:#b83a0b}
 
-/* ================= 3 & 4: SANGEET & WEDDING ================= */
+/* 3 & 4: SANGEET & WEDDING */
 #s3 .bg,#s4 .bg{background:linear-gradient(#050b2a,#0f2563 62%,#1b3b86)}
 .glass-dark{background:rgba(10,16,42,.74);border:1px solid rgba(243,212,138,.45);border-radius:22px;padding:1.5rem 1.15rem;box-shadow:0 12px 32px rgba(0,0,0,.45);color:#f3d48a}
 .glass-dark h2{font-size:2.9rem;margin:0}
@@ -80,7 +77,7 @@ body{font-family:Lora,Georgia,serif;color:#fff;line-height:1.5}
 .glass-dark .dt b{color:#ffe08a}
 .glass-dark p{margin:.18rem 0;color:#fff4d4;font-size:.94rem}
 
-/* ================= 5: GARDEN FINALE ================= */
+/* 5: GARDEN FINALE */
 #s5{overflow-y:auto;align-items:flex-start;padding-top:calc(env(safe-area-inset-top,0px) + 3.4rem)}
 #s5 .bg{position:fixed;background:linear-gradient(#bcd0e6,#f6e5c8 55%,#e4cfae)}
 #s5 .bg::after{background:linear-gradient(180deg,rgba(255,250,242,.25),rgba(20,30,40,.38))}
@@ -103,8 +100,7 @@ summary{cursor:pointer;text-align:center;font-size:.86rem;color:#fff;text-shadow
 </head>
 <body>
 
-<!-- Background music from your reference video -->
-<audio id="bgm" loop playsinline preload="auto">
+<audio id="bgm" loop playsinline preload="metadata">
   <source src="VID-20261125-WA0044.mp4" type="video/mp4">
 </audio>
 
@@ -118,11 +114,12 @@ summary{cursor:pointer;text-align:center;font-size:.86rem;color:#fff;text-shadow
   </div>
   <canvas id="fx"></canvas>
 
-  <!-- 0: GATE OPENING VIDEO (plays immediately, no landing page) -->
+  <!-- 0: GATE OPENING VIDEO -->
   <section class="layer active" id="s0" data-fx="" data-dur="0">
-    <video id="gateVid" autoplay muted playsinline preload="auto">
+    <video id="gateVid" autoplay muted playsinline webkit-playsinline preload="auto" poster="bg-invite.jpg">
       <source src="video_1.mp4" type="video/mp4">
     </video>
+    <button id="tapFallback">Tap to Open Invitation</button>
   </section>
 
   <!-- 1: MAIN INVITATION -->
@@ -219,12 +216,12 @@ summary{cursor:pointer;text-align:center;font-size:.86rem;color:#fff;text-shadow
 (function(){
   var $=function(i){return document.getElementById(i)};
   var stage=$('stage'),bgm=$('bgm'),gateVid=$('gateVid'),progBar=$('progBar');
-  var soundPill=$('soundPill'),muteBtn=$('muteBtn'),playBtn=$('playBtn');
+  var soundPill=$('soundPill'),muteBtn=$('muteBtn'),playBtn=$('playBtn'),tapFallback=$('tapFallback');
   var layers=[].slice.call(document.querySelectorAll('.layer'));
   var reduce=matchMedia('(prefers-reduced-motion:reduce)').matches;
   var base=location.href.split('#')[0];
 
-  /* Personalised guest name from #first-last */
+  /* Personalised guest name */
   function applyGuest(){
     var raw='';try{raw=decodeURIComponent(location.hash.slice(1))}catch(e){}
     var n=raw.replace(/[^A-Za-z0-9\- ]/g,'').replace(/-+/g,' ').trim().split(' ').map(function(w){return w?w[0].toUpperCase()+w.slice(1):''}).join(' ');
@@ -232,18 +229,16 @@ summary{cursor:pointer;text-align:center;font-size:.86rem;color:#fff;text-shadow
   }
   applyGuest();addEventListener('hashchange',applyGuest);
 
-  /* Fast background preloader: tries lightweight .jpg first, falls back to .png, decodes during gate video */
+  /* Fast background preloader (.jpg first, then .png) */
   document.querySelectorAll('img[data-bg]').forEach(function(img){
     var name=img.dataset.bg;
     function done(){img.classList.add('loaded')}
     img.onload=function(){if(img.decode){img.decode().then(done,done)}else{done()}};
-    img.onerror=function(){
-      if(img.src.indexOf('.jpg')>-1){img.src=name+'.png'}
-    };
+    img.onerror=function(){if(img.src.indexOf('.jpg')>-1)img.src=name+'.png'};
     img.src=name+'.jpg';
   });
 
-  /* Unmute & start background music on first tap anywhere */
+  /* Audio on first tap */
   var audioStarted=false;
   function enableAudio(){
     if(audioStarted)return;
@@ -256,7 +251,7 @@ summary{cursor:pointer;text-align:center;font-size:.86rem;color:#fff;text-shadow
   }
   document.addEventListener('pointerdown',enableAudio,{passive:true});
 
-  /* Rose petals & fireworks (lighter particle count for smooth phone FPS) */
+  /* Particles */
   var cv=$('fx'),cx=cv.getContext('2d'),W=0,H=0,mode='',P=[],nb=0,raf=0;
   function rs(){W=cv.width=stage.clientWidth;H=cv.height=stage.clientHeight}
   rs();addEventListener('resize',rs);
@@ -274,7 +269,7 @@ summary{cursor:pointer;text-align:center;font-size:.86rem;color:#fff;text-shadow
     if(m&&!raf)raf=requestAnimationFrame(loop);
   }
 
-  /* Continuous video timeline */
+  /* Timeline */
   var cur=0,timer=0,paused=false;
   function showLayer(idx){
     clearTimeout(timer);
@@ -293,10 +288,33 @@ summary{cursor:pointer;text-align:center;font-size:.86rem;color:#fff;text-shadow
     }
   }
 
-  /* Gate video ends -> seamlessly enter Scene 1 */
-  gateVid.addEventListener('ended',function(){showLayer(1)});
-  /* Safety fallback in case video fails to autoplay */
-  gateVid.play().catch(function(){setTimeout(function(){if(cur===0)showLayer(1)},7200)});
+  /* Bulletproof gate video handling for phones */
+  var videoStarted=false;
+  gateVid.addEventListener('playing',function(){
+    videoStarted=true;
+    tapFallback.classList.remove('show');
+  });
+  gateVid.addEventListener('ended',function(){if(cur===0)showLayer(1)});
+  gateVid.addEventListener('error',function(){if(cur===0)setTimeout(function(){showLayer(1)},800)});
+
+  /* Try autoplay immediately */
+  var p=gateVid.play();
+  if(p&&p.catch){
+    p.catch(function(){
+      tapFallback.classList.add('show');
+    });
+  }
+  /* If phone stalls for >3s without playing, show tap button */
+  setTimeout(function(){
+    if(cur===0&&!videoStarted){tapFallback.classList.add('show')}
+  },3000);
+
+  tapFallback.onclick=function(e){
+    e.stopPropagation();
+    enableAudio();
+    tapFallback.classList.remove('show');
+    gateVid.play().catch(function(){showLayer(1)});
+  };
 
   /* Controls */
   muteBtn.onclick=function(e){
@@ -309,7 +327,7 @@ summary{cursor:pointer;text-align:center;font-size:.86rem;color:#fff;text-shadow
     e.stopPropagation();
     paused=!paused;
     this.textContent=paused?'▶':'⏸';
-    if(cur===0){paused?gateVid.pause():gateVid.play()}
+    if(cur===0){paused?gateVid.pause():gateVid.play().catch(function(){})}
     if(paused){clearTimeout(timer);bgm.pause()}
     else{if(audioStarted&&!bgm.muted)bgm.play().catch(function(){});var dur=+layers[cur].dataset.dur||0;if(dur>0)timer=setTimeout(function(){showLayer(cur+1)},dur/2)}
   };
@@ -318,7 +336,7 @@ summary{cursor:pointer;text-align:center;font-size:.86rem;color:#fff;text-shadow
     paused=false;playBtn.textContent='⏸';
     clearTimeout(timer);
     showLayer(0);
-    gateVid.currentTime=0;gateVid.play().catch(function(){});
+    gateVid.currentTime=0;gateVid.play().catch(function(){showLayer(1)});
     if(audioStarted){bgm.currentTime=0;if(!bgm.muted)bgm.play().catch(function(){})}
   };
 
@@ -328,7 +346,8 @@ summary{cursor:pointer;text-align:center;font-size:.86rem;color:#fff;text-shadow
   function tick(){
     var now=Date.now(),df=t0-now;
     if(df<=0){$('cdnote').textContent=now<t1?'The celebrations are underway. Join us!':'Thank you for your blessings and wishes.';['d','h','m','s'].forEach(function(k){$(k).textContent='0'});return}
-    var s=Math.floor(df/1000);$('d').textContent=Math.floor(s/86400);$('h').textContent=pad(Math.floor(s\%86400/3600));$('m').textContent=pad(Math.floor(s%3600/60));$('s').textContent=pad(s\%60);$('cdnote').textContent='until the Satsang begins on 11th December';
+    var s=Math.floor(df/1000);$('d').textContent=Math.floor(s/86400);$('h').textContent=pad(Math.floor(s%86400/3600));$('m').textContent=pad(Math.floor(s%3600/60));$('s').textContent=pad(s%60);
+    $('cdnote').textContent='until the Satsang begins on 11th December';
   }
   tick();setInterval(tick,1000);
 
@@ -336,4 +355,14 @@ summary{cursor:pointer;text-align:center;font-size:.86rem;color:#fff;text-shadow
   function toast(m){$('toast').textContent=m;clearTimeout(toast.t);toast.t=setTimeout(function(){$('toast').textContent=''},3500)}
   function copy(text,msg){
     function fb(){var ta=document.createElement('textarea');ta.value=text;ta.style.cssText='position:fixed;opacity:0';document.body.appendChild(ta);ta.select();var ok=false;try{ok=document.execCommand('copy')}catch(e){}document.body.removeChild(ta);toast(ok?msg:'Could not copy.')}
-    try{navigator.clipboard&&navigator.clipboard.writeText?navigator.clipboard.writeText(text).then(function(){toast(msg)},
+    try{navigator.clipboard&&navigator.clipboard.writeText?navigator.clipboard.writeText(text).then(function(){toast(msg)},fb):fb()}catch(e){fb()}
+  }
+  function slug(n){return n.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'')}
+  function link(){var s=slug($('gIn').value);return s?base+'#'+s:base}
+  $('gIn').oninput=function(){$('gLink').value=link()};$('gLink').value=link();
+  $('shareWa').onclick=function(){var n=$('gIn').value.trim();open('https://wa.me/?text='+encodeURIComponent((n?'Dear '+n+',\n\n':'')+'With the blessings of Lord Ganesha, Smt. Sarla Rani and Sh. Sanjeev Khurana cordially invite you to the wedding of their son Vishal (Vishu) with Priya on 11th and 12th December 2026 at Hisar Haveli, Near Mayer Toll, Hansi.\n\nSee your invitation here:\n'+link()),'_blank','noopener')};
+  $('copyLink').onclick=function(){copy(link(),'Link copied.')};
+})();
+</script>
+</body>
+</html>
