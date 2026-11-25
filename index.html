@@ -8,10 +8,18 @@
 <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Lora:ital,wght@0,400;0,600;1,400&family=Playfair+Display:wght@500;600;700&family=Tiro+Devanagari+Hindi&display=swap" rel="stylesheet">
 <style>
 *{box-sizing:border-box}
-html,body{margin:0;width:100%;height:100%;background:#120b20;overflow:hidden;user-select:none;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;width:100%;height:100%;background:#100a1d;overflow:hidden;user-select:none;-webkit-tap-highlight-color:transparent}
 body{font-family:Lora,Georgia,serif;color:#fff;line-height:1.5}
 
-#stage{position:fixed;inset:0;width:100vw;height:100vh;height:100dvh;overflow:hidden;background:#120b20}
+#stage{position:fixed;inset:0;width:100vw;height:100vh;height:100dvh;overflow:hidden;background:#100a1d}
+
+/* Preloader / Buffer screen */
+#loader{position:fixed;inset:0;z-index:100;background:radial-gradient(circle at 50% 45%,#24153d,#0d0818 75%);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;transition:opacity .7s ease}
+#loader.done{opacity:0;pointer-events:none}
+#loader .ld-title{font-family:"Great Vibes",cursive;font-size:2.4rem;color:#f3d48a;letter-spacing:.02em}
+#loader .ld-bar{width:min(220px,62vw);height:4px;border-radius:999px;background:rgba(255,255,255,.14);overflow:hidden}
+#loader .ld-fill{height:100%;width:0%;background:linear-gradient(90deg,#d49c37,#fff3c4);transition:width .2s ease}
+#loader .ld-pct{font:600 .9rem "Playfair Display",serif;color:#fdeab0;letter-spacing:.12em}
 
 /* Subtle top progress bar */
 #prog{position:absolute;top:0;left:0;right:0;height:3px;background:rgba(255,255,255,.18);z-index:40;pointer-events:none}
@@ -38,9 +46,9 @@ body{font-family:Lora,Georgia,serif;color:#fff;line-height:1.5}
 
 .btn{font:inherit;font-weight:600;cursor:pointer;border:1.5px solid currentColor;background:rgba(20,12,34,.55);color:inherit;padding:.5rem 1.15rem;border-radius:999px;text-decoration:none;display:inline-block;font-size:.86rem}
 
-/* 0: GATE VIDEO */
-#s0{padding:0;background:#1a112c}
-#gateVid{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center;display:block;background:#1a112c}
+/* 0: GATE VIDEO (sharpest hardware-accelerated rendering) */
+#s0{padding:0;background:#0d0818}
+#gateVid{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center;display:block;transform:translateZ(0);backface-visibility:hidden}
 
 /* 1: MAIN INVITATION */
 #s1 .bg{background:linear-gradient(#1a112c,#3b2856 65%,#6a4c7a)}
@@ -95,17 +103,24 @@ summary{cursor:pointer;text-align:center;font-size:.86rem;color:#fff;text-shadow
 <!-- ========================================================= -->
 <!-- ADD YOUR MP3 MUSIC PATH BELOW (e.g. music.mp3)            -->
 <!-- ========================================================= -->
-<audio id="bgm" loop playsinline preload="auto">
-  <source src="music_1.mp3" type="audio/mpeg">
+<audio id="bgm" autoplay loop playsinline preload="auto">
+  <source src="YOUR_MUSIC_FILE.mp3" type="audio/mpeg">
 </audio>
+
+<!-- Percentage buffer screen so video & backgrounds play in strict sequence -->
+<div id="loader">
+  <div class="ld-title">Vishal &amp; Priya</div>
+  <div class="ld-bar"><div class="ld-fill" id="ldFill"></div></div>
+  <div class="ld-pct" id="ldPct">0%</div>
+</div>
 
 <div id="stage">
   <div id="prog"><i id="progBar"></i></div>
   <canvas id="fx"></canvas>
 
-  <!-- 0: GATE OPENING VIDEO -->
+  <!-- 0: GATE OPENING VIDEO (replace video_1.mp4 with your highest-quality HD export) -->
   <section class="layer active" id="s0" data-fx="" data-dur="0">
-    <video id="gateVid" autoplay muted playsinline webkit-playsinline preload="auto" poster="bg-invite.jpg">
+    <video id="gateVid" muted playsinline webkit-playsinline preload="auto">
       <source src="video_1.mp4" type="video/mp4">
     </video>
   </section>
@@ -204,6 +219,7 @@ summary{cursor:pointer;text-align:center;font-size:.86rem;color:#fff;text-shadow
 (function(){
   var $=function(i){return document.getElementById(i)};
   var stage=$('stage'),bgm=$('bgm'),gateVid=$('gateVid'),progBar=$('progBar');
+  var loader=$('loader'),ldFill=$('ldFill'),ldPct=$('ldPct');
   var layers=[].slice.call(document.querySelectorAll('.layer'));
   var reduce=matchMedia('(prefers-reduced-motion:reduce)').matches;
   var base=location.href.split('#')[0];
@@ -216,23 +232,72 @@ summary{cursor:pointer;text-align:center;font-size:.86rem;color:#fff;text-shadow
   }
   applyGuest();addEventListener('hashchange',applyGuest);
 
-  /* Fast background preloader (.jpg first, then .png) */
-  document.querySelectorAll('img[data-bg]').forEach(function(img){
-    var name=img.dataset.bg;
-    function done(){img.classList.add('loaded')}
-    img.onload=function(){if(img.decode){img.decode().then(done,done)}else{done()}};
-    img.onerror=function(){if(img.src.indexOf('.jpg')>-1)img.src=name+'.png'};
+  /* Autoplay music immediately (+ silent fallback on first touch if browser blocks autoplay) */
+  var audioPlaying=false;
+  function tryPlayAudio(){
+    if(document.hidden)return;
+    bgm.muted=false;
+    var p=bgm.play();
+    if(p&&p.then){
+      p.then(function(){audioPlaying=true}).catch(function(){audioPlaying=false});
+    }
+  }
+  document.addEventListener('pointerdown',function(){if(!audioPlaying)tryPlayAudio()},{passive:true});
+
+  /* Buffer video + all background images before starting sequence */
+  var imgs=[].slice.call(document.querySelectorAll('img[data-bg]'));
+  var imgDone=0,vidProg=0,started=false;
+
+  function updateLoader(){
+    var imgPct=imgs.length?(imgDone/imgs.length)*50:50;
+    var pct=Math.min(100,Math.round(imgPct+vidProg*50));
+    ldFill.style.width=pct+'%';
+    ldPct.textContent=pct+'%';
+    if(pct>=100&&!started)startShow();
+  }
+
+  function startShow(){
+    if(started)return;
+    started=true;
+    ldFill.style.width='100%';
+    ldPct.textContent='100%';
+    setTimeout(function(){
+      loader.classList.add('done');
+      tryPlayAudio();
+      gateVid.currentTime=0;
+      gateVid.play().catch(function(){showLayer(1)});
+    },250);
+  }
+
+  /* Preload images (.jpg first, then .png) */
+  imgs.forEach(function(img){
+    var name=img.dataset.bg,counted=false;
+    function finish(){
+      img.classList.add('loaded');
+      if(!counted){counted=true;imgDone++;updateLoader()}
+    }
+    img.onload=function(){if(img.decode){img.decode().then(finish,finish)}else{finish()}};
+    img.onerror=function(){
+      if(img.src.indexOf('.jpg')>-1){img.src=name+'.png'}
+      else{finish()}
+    };
     img.src=name+'.jpg';
   });
 
-  /* Start MP3 music on first tap */
-  var audioStarted=false;
-  function enableAudio(){
-    if(audioStarted)return;
-    audioStarted=true;
-    bgm.muted=false;
-    bgm.play().catch(function(){audioStarted=false});
-  }
+  /* Track video buffer progress */
+  gateVid.addEventListener('progress',function(){
+    if(gateVid.duration&&gateVid.buffered.length){
+      vidProg=Math.min(1,gateVid.buffered.end(gateVid.buffered.length-1)/gateVid.duration);
+      updateLoader();
+    }
+  });
+  gateVid.addEventListener('canplaythrough',function(){vidProg=1;updateLoader()});
+  gateVid.addEventListener('canplay',function(){if(vidProg<0.85){vidProg=0.85;updateLoader()}});
+  gateVid.addEventListener('error',function(){vidProg=1;updateLoader()});
+  gateVid.load();
+
+  /* Safety timeout so slow mobile connections never get stuck on loader */
+  setTimeout(function(){if(!started)startShow()},7000);
 
   /* Particles */
   var cv=$('fx'),cx=cv.getContext('2d'),W=0,H=0,mode='',P=[],nb=0,raf=0;
@@ -267,14 +332,41 @@ summary{cursor:pointer;text-align:center;font-size:.86rem;color:#fff;text-shadow
     setMode(layers[cur].dataset.fx||'');
     progBar.style.width=(cur/(layers.length-1)*100)+'%';
     var dur=+layers[cur].dataset.dur||0;
-    if(dur>0){
+    if(dur>0&&!document.hidden){
       timer=setTimeout(function(){showLayer(cur+1)},dur);
     }
   }
 
+  /* Pause everything when user switches tab/app or locks phone; resume when back */
+  function pauseAll(){
+    clearTimeout(timer);
+    bgm.pause();
+    if(cur===0)gateVid.pause();
+  }
+  function resumeAll(){
+    if(!started)return;
+    tryPlayAudio();
+    if(cur===0){
+      gateVid.play().catch(function(){});
+    }else{
+      var dur=+layers[cur].dataset.dur||0;
+      if(dur>0){
+        clearTimeout(timer);
+        timer=setTimeout(function(){showLayer(cur+1)},dur);
+      }
+    }
+  }
+  document.addEventListener('visibilitychange',function(){
+    if(document.hidden){pauseAll()}else{resumeAll()}
+  });
+  window.addEventListener('pagehide',pauseAll);
+  window.addEventListener('blur',pauseAll);
+  window.addEventListener('focus',function(){if(!document.hidden)resumeAll()});
+
   /* Tap anywhere to change page (left 28% = previous, rest = next) */
   stage.addEventListener('click',function(e){
-    enableAudio();
+    if(!started)return;
+    if(!audioPlaying)tryPlayAudio();
     if(e.target.closest('a, button, input, summary, details, .tools'))return;
     if(e.clientX<stage.clientWidth*0.28){
       if(cur>0)showLayer(cur-1);
@@ -285,8 +377,6 @@ summary{cursor:pointer;text-align:center;font-size:.86rem;color:#fff;text-shadow
 
   /* Gate video auto-advance */
   gateVid.addEventListener('ended',function(){if(cur===0)showLayer(1)});
-  gateVid.addEventListener('error',function(){if(cur===0)setTimeout(function(){showLayer(1)},800)});
-  gateVid.play().catch(function(){});
 
   /* Countdown */
   var t0=new Date('2026-12-11T15:00:00+05:30').getTime(),t1=new Date('2026-12-13T00:00:00+05:30').getTime();
