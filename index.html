@@ -13,13 +13,19 @@ body{font-family:Lora,Georgia,serif;color:#fff;line-height:1.5}
 
 #stage{position:fixed;inset:0;width:100vw;height:100vh;height:100dvh;overflow:hidden;background:#100a1d}
 
-/* Preloader / Buffer screen */
-#loader{position:fixed;inset:0;z-index:100;background:radial-gradient(circle at 50% 45%,#24153d,#0d0818 75%);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;transition:opacity .7s ease}
+/* Preloader / Buffer + Tap to Play screen */
+#loader{position:fixed;inset:0;z-index:100;background:radial-gradient(circle at 50% 45%,#24153d,#0d0818 75%);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;transition:opacity .7s ease;text-align:center;padding:1.5rem}
 #loader.done{opacity:0;pointer-events:none}
-#loader .ld-title{font-family:"Great Vibes",cursive;font-size:2.4rem;color:#f3d48a;letter-spacing:.02em}
+#loader .ld-title{font-family:"Great Vibes",cursive;font-size:2.6rem;color:#f3d48a;letter-spacing:.02em}
+#loader .ld-sub{font-size:.85rem;letter-spacing:.18em;color:#fdeab0;text-transform:uppercase;margin-top:-8px}
 #loader .ld-bar{width:min(220px,62vw);height:4px;border-radius:999px;background:rgba(255,255,255,.14);overflow:hidden}
 #loader .ld-fill{height:100%;width:0%;background:linear-gradient(90deg,#d49c37,#fff3c4);transition:width .2s ease}
 #loader .ld-pct{font:600 .9rem "Playfair Display",serif;color:#fdeab0;letter-spacing:.12em}
+#tapPlay{display:none;margin-top:8px;background:linear-gradient(135deg,#f8df94,#d49c37);color:#2c0e36;border:none;padding:.78rem 2rem;border-radius:999px;font:600 .98rem Lora,serif;letter-spacing:.04em;box-shadow:0 6px 26px rgba(243,200,100,.5);cursor:pointer;animation:pulse 2s infinite}
+#loader.ready{cursor:pointer}
+#loader.ready .ld-bar,#loader.ready .ld-pct{display:none}
+#loader.ready #tapPlay{display:inline-block}
+@keyframes pulse{50%{transform:scale(1.05);box-shadow:0 8px 32px rgba(255,220,130,.8)}}
 
 /* Subtle top progress bar */
 #prog{position:absolute;top:0;left:0;right:0;height:3px;background:rgba(255,255,255,.18);z-index:40;pointer-events:none}
@@ -46,12 +52,12 @@ body{font-family:Lora,Georgia,serif;color:#fff;line-height:1.5}
 
 .btn{font:inherit;font-weight:600;cursor:pointer;border:1.5px solid currentColor;background:rgba(20,12,34,.55);color:inherit;padding:.5rem 1.15rem;border-radius:999px;text-decoration:none;display:inline-block;font-size:.86rem}
 
-/* 0: GATE VIDEO (sharpest hardware-accelerated rendering) */
+/* 0: GATE VIDEO */
 #s0{padding:0;background:#0d0818}
 #gateVid{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center;display:block;transform:translateZ(0);backface-visibility:hidden}
 
 /* 1: MAIN INVITATION */
-#s1 .bg{background:linear-gradient(#1a112c,#3b2856 65%,#6a4c7a)}
+#s1 .bg,#s5 .bg{background:linear-gradient(#1a112c,#3b2856 65%,#6a4c7a)}
 .card{position:relative;background:rgba(255,252,245,.94);color:#4a1d5c;border:3px solid #e9c46a;border-radius:42% 42% 18px 18px/10% 10% 18px 18px;padding:2.2rem 1.25rem 1.8rem;box-shadow:0 14px 36px rgba(0,0,0,.45)}
 .card .hi{color:#8a5a12;font-size:.88rem;line-height:1.6;margin-bottom:.25rem}
 .card .host{font-size:.86rem;margin:.6rem 0;color:#3f264f}
@@ -77,10 +83,13 @@ body{font-family:Lora,Georgia,serif;color:#fff;line-height:1.5}
 .glass-dark .dt b{color:#ffe08a}
 .glass-dark p{margin:.18rem 0;color:#fff4d4;font-size:.94rem}
 
-/* 5: GARDEN FINALE */
-#s5{overflow-y:auto;align-items:flex-start;padding-top:calc(env(safe-area-inset-top,0px) + 2.2rem)}
-#s5 .bg{position:fixed;background:linear-gradient(#bcd0e6,#f6e5c8 55%,#e4cfae)}
-#s5 .bg::after{background:linear-gradient(180deg,rgba(255,250,242,.25),rgba(20,30,40,.38))}
+/* 5: SISTER & BROTHER-IN-LAW */
+.couple-name{font-size:clamp(2.1rem,9vw,2.6rem);color:#fff6d6;margin:.6rem 0 .2rem;line-height:1.2}
+
+/* 6: GARDEN FINALE */
+#s6{overflow-y:auto;align-items:flex-start;padding-top:calc(env(safe-area-inset-top,0px) + 2.2rem)}
+#s6 .bg{position:fixed;background:linear-gradient(#bcd0e6,#f6e5c8 55%,#e4cfae)}
+#s6 .bg::after{background:linear-gradient(180deg,rgba(255,250,242,.25),rgba(20,30,40,.38))}
 .card2{position:relative;background:rgba(255,253,249,.9);color:#4a1d5c;border-radius:16px;padding:.95rem .85rem;margin:.55rem 0;border:1px solid rgba(217,164,65,.4);box-shadow:0 6px 20px rgba(0,0,0,.14)}
 .card2 h3{margin:0 0 .2rem;font:600 .98rem "Playfair Display",serif;color:#7a1f4a}
 .card2 p{margin:.1rem 0;font-size:.9rem}
@@ -103,22 +112,24 @@ summary{cursor:pointer;text-align:center;font-size:.86rem;color:#fff;text-shadow
 <!-- ========================================================= -->
 <!-- ADD YOUR MP3 MUSIC PATH BELOW (e.g. music.mp3)            -->
 <!-- ========================================================= -->
-<audio id="bgm" autoplay loop playsinline preload="auto">
-  <source src="YOUR_MUSIC_FILE.mp3" type="audio/mpeg">
+<audio id="bgm" loop playsinline preload="auto">
+  <source src="music_1.mp3" type="audio/mpeg">
 </audio>
 
-<!-- Percentage buffer screen so video & backgrounds play in strict sequence -->
+<!-- Preloader with buffer % -> Tap to Play (starts music + video together) -->
 <div id="loader">
   <div class="ld-title">Vishal &amp; Priya</div>
+  <div class="ld-sub">Wedding Invitation</div>
   <div class="ld-bar"><div class="ld-fill" id="ldFill"></div></div>
   <div class="ld-pct" id="ldPct">0%</div>
+  <button id="tapPlay" type="button">Tap to Play</button>
 </div>
 
 <div id="stage">
   <div id="prog"><i id="progBar"></i></div>
   <canvas id="fx"></canvas>
 
-  <!-- 0: GATE OPENING VIDEO (replace video_1.mp4 with your highest-quality HD export) -->
+  <!-- 0: GATE OPENING VIDEO -->
   <section class="layer active" id="s0" data-fx="" data-dur="0">
     <video id="gateVid" muted playsinline webkit-playsinline preload="auto">
       <source src="video_1.mp4" type="video/mp4">
@@ -192,14 +203,27 @@ summary{cursor:pointer;text-align:center;font-size:.86rem;color:#fff;text-shadow
     </div>
   </section>
 
-  <!-- 5: GARDEN FINALE -->
-  <section class="layer" id="s5" data-fx="" data-dur="0">
+  <!-- 5: SISTER & BROTHER-IN-LAW (reusing bg-invite) -->
+  <section class="layer" id="s5" data-fx="petals" data-dur="6000">
+    <div class="bg"><img data-bg="bg-invite" alt="" decoding="async"></div>
+    <div class="t">
+      <div class="glass-dark">
+        <div class="pl rv" style="--i:0;font-size:1.05rem;letter-spacing:.14em;text-transform:uppercase;color:#fdeab0">Sister &amp; Brother-in-Law</div>
+        <div class="divider rv" style="--i:1;margin:.7rem auto"></div>
+        <div class="sc couple-name rv" style="--i:2">Shefali &amp; Keshav</div>
+        <div class="sc couple-name rv" style="--i:3">Shilpa &amp; Jatin</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 6: GARDEN FINALE -->
+  <section class="layer" id="s6" data-fx="" data-dur="0">
     <div class="bg"><img data-bg="bg-garden" alt="" decoding="async"></div>
     <div class="t">
       <div class="sc rv" style="--i:0;font-size:2.3rem;color:#fff;text-shadow:0 2px 12px rgba(0,0,0,.6)">With best compliments</div>
       <div class="card2 rv" style="--i:1"><p>Special invitation by the shining stars of our family</p><p class="pl" style="color:#7a1f4a;font-size:1.05rem">Tashvi, Nohar, Mivaan</p></div>
       <div class="cols rv" style="--i:2">
-        <div class="card2"><h3>R.S.V.P.</h3><p>Keshav Arora</p><p>Jatin Chhabra</p><p>Manoj Khurana</p><p>Satish Khurana</p><p style="margin-top:.3rem"><i>Shefali–Keshav<br>Shilpa–Jatin</i></p></div>
+        <div class="card2"><h3>R.S.V.P.</h3><p>Keshav Arora</p><p>Jatin Chhabra</p><p>Manoj Khurana</p><p>Satish Khurana</p></div>
         <div class="card2"><h3>Best Compliments</h3><p>Khurana Family</p><p>Chhabra Family</p><p>Sidhar Family</p><p>Sapra Family</p><p>Relatives &amp; Friends</p></div>
       </div>
       <div class="card2 rv" style="--i:3">
@@ -228,42 +252,36 @@ summary{cursor:pointer;text-align:center;font-size:.86rem;color:#fff;text-shadow
   }
   applyGuest();addEventListener('hashchange',applyGuest);
 
-  /* Autoplay music immediately (+ silent fallback on first touch if browser blocks autoplay) */
-  var audioPlaying=false;
-  function tryPlayAudio(){
-    if(document.hidden)return;
-    bgm.muted=false;
-    var p=bgm.play();
-    if(p&&p.then){
-      p.then(function(){audioPlaying=true}).catch(function(){audioPlaying=false});
-    }
-  }
-  document.addEventListener('pointerdown',function(){if(!audioPlaying)tryPlayAudio()},{passive:true});
-
-  /* Buffer video + all background images before starting sequence */
+  /* Buffer video + all background images, then show Tap to Play */
   var imgs=[].slice.call(document.querySelectorAll('img[data-bg]'));
-  var imgDone=0,vidProg=0,started=false;
+  var imgDone=0,vidProg=0,ready=false,started=false;
 
   function updateLoader(){
     var imgPct=imgs.length?(imgDone/imgs.length)*50:50;
     var pct=Math.min(100,Math.round(imgPct+vidProg*50));
     ldFill.style.width=pct+'%';
     ldPct.textContent=pct+'%';
-    if(pct>=100&&!started)startShow();
+    if(pct>=100&&!ready)markReady();
+  }
+
+  function markReady(){
+    if(ready)return;
+    ready=true;
+    ldFill.style.width='100%';
+    ldPct.textContent='100%';
+    loader.classList.add('ready');
   }
 
   function startShow(){
-    if(started)return;
+    if(!ready||started)return;
     started=true;
-    ldFill.style.width='100%';
-    ldPct.textContent='100%';
-    setTimeout(function(){
-      loader.classList.add('done');
-      tryPlayAudio();
-      gateVid.currentTime=0;
-      gateVid.play().catch(function(){showLayer(1)});
-    },250);
+    bgm.muted=false;
+    bgm.play().catch(function(){});
+    gateVid.currentTime=0;
+    gateVid.play().catch(function(){showLayer(1)});
+    loader.classList.add('done');
   }
+  loader.addEventListener('click',startShow);
 
   /* Preload images (.jpg first, then .png) */
   imgs.forEach(function(img){
@@ -292,8 +310,8 @@ summary{cursor:pointer;text-align:center;font-size:.86rem;color:#fff;text-shadow
   gateVid.addEventListener('error',function(){vidProg=1;updateLoader()});
   gateVid.load();
 
-  /* Safety timeout so slow mobile connections never get stuck on loader */
-  setTimeout(function(){if(!started)startShow()},7000);
+  /* Safety timeout so slow connections still unlock Tap to Play */
+  setTimeout(function(){if(!ready)markReady()},6000);
 
   /* Particles */
   var cv=$('fx'),cx=cv.getContext('2d'),W=0,H=0,mode='',P=[],nb=0,raf=0;
@@ -341,7 +359,7 @@ summary{cursor:pointer;text-align:center;font-size:.86rem;color:#fff;text-shadow
   }
   function resumeAll(){
     if(!started)return;
-    tryPlayAudio();
+    bgm.play().catch(function(){});
     if(cur===0){
       gateVid.play().catch(function(){});
     }else{
@@ -362,7 +380,6 @@ summary{cursor:pointer;text-align:center;font-size:.86rem;color:#fff;text-shadow
   /* Tap anywhere to change page (left 28% = previous, rest = next) */
   stage.addEventListener('click',function(e){
     if(!started)return;
-    if(!audioPlaying)tryPlayAudio();
     if(e.target.closest('a, button, input, summary, details, .tools'))return;
     if(e.clientX<stage.clientWidth*0.28){
       if(cur>0)showLayer(cur-1);
