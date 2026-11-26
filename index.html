@@ -74,6 +74,7 @@ body{font-family:Lora,Georgia,serif;color:#fff;line-height:1.5}
 .dt b{font:600 2.6rem "Playfair Display",serif;color:#b83a0b}
 .dt span{border-top:1px solid #d9a441;border-bottom:1px solid #d9a441;padding:.1rem .75rem;color:#7a3e14}
 #s2 .btn{background:rgba(184,58,11,.12);color:#9c3510;border-color:#b83a0b}
+.addr{font-size:.82rem;line-height:1.45;margin:.25rem 0 .85rem;opacity:.92}
 
 /* 3 & 4: SANGEET & WEDDING */
 #s3 .bg,#s4 .bg{background:linear-gradient(#050b2a,#0f2563 62%,#1b3b86)}
@@ -87,22 +88,21 @@ body{font-family:Lora,Georgia,serif;color:#fff;line-height:1.5}
 .couple-name{font-size:clamp(2.1rem,9vw,2.6rem);color:#fff6d6;margin:.6rem 0 .2rem;line-height:1.2}
 
 /* 6: GARDEN FINALE */
-#s6{overflow-y:auto;align-items:flex-start;padding-top:calc(env(safe-area-inset-top,0px) + 2.2rem)}
+#s6{overflow-y:auto;align-items:flex-start;padding-top:calc(env(safe-area-inset-top,0px) + 1.8rem);padding-bottom:calc(env(safe-area-inset-bottom,0px) + 2rem)}
 #s6 .bg{position:fixed;background:linear-gradient(#bcd0e6,#f6e5c8 55%,#e4cfae)}
 #s6 .bg::after{background:linear-gradient(180deg,rgba(255,250,242,.25),rgba(20,30,40,.38))}
-.card2{position:relative;background:rgba(255,253,249,.9);color:#4a1d5c;border-radius:16px;padding:.95rem .85rem;margin:.55rem 0;border:1px solid rgba(217,164,65,.4);box-shadow:0 6px 20px rgba(0,0,0,.14)}
+.card2{position:relative;background:rgba(255,253,249,.9);color:#4a1d5c;border-radius:16px;padding:.9rem .85rem;margin:.5rem 0;border:1px solid rgba(217,164,65,.4);box-shadow:0 6px 20px rgba(0,0,0,.14)}
 .card2 h3{margin:0 0 .2rem;font:600 .98rem "Playfair Display",serif;color:#7a1f4a}
-.card2 p{margin:.1rem 0;font-size:.9rem}
+.card2 p{margin:.1rem 0;font-size:.88rem}
 .cd{display:grid;grid-template-columns:repeat(4,1fr);gap:.35rem}
 .cd b{display:block;font:600 1.45rem "Playfair Display",serif;color:#7a1f4a;font-variant-numeric:tabular-nums}
 .cd small{color:#5d4a6d;font-size:.72rem}
 .cols{display:grid;grid-template-columns:1fr 1fr;gap:.5rem}
-details{margin-top:.55rem;text-align:left;color:#3a1b57}
-summary{cursor:pointer;text-align:center;font-size:.86rem;color:#fff;text-shadow:0 1px 6px rgba(0,0,0,.75);font-weight:600}
-.tools{background:rgba(255,255,255,.94);border-radius:14px;padding:.85rem;margin-top:.5rem}
-.tools input{font:inherit;width:100%;padding:.48rem .65rem;border:1.5px solid #cdb8e6;border-radius:8px;margin:.3rem 0;color:#2a1f3d;background:#fff}
-.tools button{color:#4a1d5c;background:#efe4fb;border:1px solid #cdb8e6;border-radius:999px;padding:.45rem 1rem;font:600 .84rem Lora,serif;cursor:pointer;margin:.25rem .25rem 0 0}
-#toast{min-height:1.2rem;font-weight:600;color:#7a1f4a;font-size:.84rem}
+.call-list{display:flex;flex-direction:column;gap:.45rem;margin-top:.55rem}
+.call-row{display:flex;align-items:center;justify-content:space-between;background:rgba(122,31,74,.06);border:1px solid rgba(122,31,74,.16);border-radius:10px;padding:.4rem .65rem}
+.call-num{font-weight:600;color:#4a1d5c;font-size:.9rem;letter-spacing:.02em}
+.call-btn{background:#7a1f4a;color:#fff;text-decoration:none;font-size:.78rem;font-weight:600;padding:.34rem .8rem;border-radius:999px;display:inline-block}
+.call-btn:active{transform:scale(.95)}
 
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition-duration:.01s!important;transition-delay:0s!important}}
 </style>
@@ -162,8 +162,9 @@ summary{cursor:pointer;text-align:center;font-size:.86rem;color:#fff;text-shadow
         <div class="rv" style="--i:1;font-weight:600">December</div>
         <div class="dt rv" style="--i:2"><span>Friday</span><b>11</b><span>2026</span></div>
         <p class="pl rv" style="--i:3;margin:.45rem 0 0">Time : 3 to 6 P.M.</p>
-        <p class="rv" style="--i:4;margin:0 0 .9rem">(At Our Residence)</p>
-        <a class="btn rv" style="--i:5" target="_blank" rel="noopener" href="https://calendar.google.com/calendar/render?action=TEMPLATE&text=Satsang%20%E2%80%93%20Vishal%20%26%20Priya&dates=20261211T150000/20261211T180000&ctz=Asia/Kolkata&location=Khurana%20Residence">Add to calendar</a>
+        <p class="rv" style="--i:4;margin:.15rem 0 0">(At Our Residence)</p>
+        <p class="addr rv" style="--i:5">#N82, New Model Town Extension N Block,<br>Near Ganpati Sweets, Hisar</p>
+        <a class="btn rv" style="--i:6" target="_blank" rel="noopener" href="https://calendar.google.com/calendar/render?action=TEMPLATE&text=Satsang%20%E2%80%93%20Vishal%20%26%20Priya&dates=20261211T150000/20261211T180000&ctz=Asia/Kolkata&location=%23N82%2C%20New%20Model%20Town%20Extension%20N%20Block%2C%20Near%20Ganpati%20Sweets%2C%20Hisar">Add to calendar</a>
       </div>
     </div>
   </section>
@@ -178,6 +179,7 @@ summary{cursor:pointer;text-align:center;font-size:.86rem;color:#fff;text-shadow
         <div class="dt rv" style="--i:2"><span>Friday</span><b>11</b><span>2026</span></div>
         <p class="rv pl" style="--i:3">Time : 8:00 PM</p>
         <p class="rv" style="--i:4"><i>(At Our Residence)</i></p>
+        <p class="addr rv" style="--i:5;margin-bottom:0">#N82, New Model Town Extension N Block,<br>Near Ganpati Sweets, Hisar</p>
       </div>
     </div>
   </section>
@@ -210,8 +212,8 @@ summary{cursor:pointer;text-align:center;font-size:.86rem;color:#fff;text-shadow
       <div class="glass-dark">
         <div class="pl rv" style="--i:0;font-size:1.05rem;letter-spacing:.14em;text-transform:uppercase;color:#fdeab0">Sister &amp; Brother-in-Law</div>
         <div class="divider rv" style="--i:1;margin:.7rem auto"></div>
-        <div class="sc couple-name rv" style="--i:2">Shefali &amp; Keshav</div>
-        <div class="sc couple-name rv" style="--i:3">Shilpa &amp; Jatin</div>
+        <div class="sc couple-name rv" style="--i:2">Shilpa &amp; Jatin</div>
+        <div class="sc couple-name rv" style="--i:3">Shefali &amp; Keshav</div>
       </div>
     </div>
   </section>
@@ -227,6 +229,28 @@ summary{cursor:pointer;text-align:center;font-size:.86rem;color:#fff;text-shadow
         <div class="card2"><h3>Best Compliments</h3><p>Khurana Family</p><p>Chhabra Family</p><p>Sidhar Family</p><p>Sapra Family</p><p>Relatives &amp; Friends</p></div>
       </div>
       <div class="card2 rv" style="--i:3">
+        <h3>Residence &amp; Contact</h3>
+        <p>#N82, New Model Town Extension N Block,<br>Near Ganpati Sweets, Hisar</p>
+        <div class="call-list">
+          <div class="call-row">
+            <span class="call-num">7206189679</span>
+            <a class="call-btn" href="tel:+917206189679">Call Now</a>
+          </div>
+          <div class="call-row">
+            <span class="call-num">9354379850</span>
+            <a class="call-btn" href="tel:+919354379850">Call Now</a>
+          </div>
+          <div class="call-row">
+            <span class="call-num">7419577777</span>
+            <a class="call-btn" href="tel:+917419577777">Call Now</a>
+          </div>
+          <div class="call-row">
+            <span class="call-num">8059620202</span>
+            <a class="call-btn" href="tel:+918059620202">Call Now</a>
+          </div>
+        </div>
+      </div>
+      <div class="card2 rv" style="--i:4">
         <h3>Counting the moments</h3>
         <div class="cd"><div><b id="d">–</b><small>days</small></div><div><b id="h">–</b><small>hours</small></div><div><b id="m">–</b><small>mins</small></div><div><b id="s">–</b><small>secs</small></div></div>
         <p id="cdnote" style="font-size:.8rem;color:#5d4a6d"></p>
@@ -242,7 +266,6 @@ summary{cursor:pointer;text-align:center;font-size:.86rem;color:#fff;text-shadow
   var loader=$('loader'),ldFill=$('ldFill'),ldPct=$('ldPct');
   var layers=[].slice.call(document.querySelectorAll('.layer'));
   var reduce=matchMedia('(prefers-reduced-motion:reduce)').matches;
-  var base=location.href.split('#')[0];
 
   /* Personalised guest name */
   function applyGuest(){
@@ -401,18 +424,6 @@ summary{cursor:pointer;text-align:center;font-size:.86rem;color:#fff;text-shadow
     $('cdnote').textContent='until the Satsang begins on 11th December';
   }
   tick();setInterval(tick,1000);
-
-  /* Family tools */
-  function toast(m){$('toast').textContent=m;clearTimeout(toast.t);toast.t=setTimeout(function(){$('toast').textContent=''},3500)}
-  function copy(text,msg){
-    function fb(){var ta=document.createElement('textarea');ta.value=text;ta.style.cssText='position:fixed;opacity:0';document.body.appendChild(ta);ta.select();var ok=false;try{ok=document.execCommand('copy')}catch(e){}document.body.removeChild(ta);toast(ok?msg:'Could not copy.')}
-    try{navigator.clipboard&&navigator.clipboard.writeText?navigator.clipboard.writeText(text).then(function(){toast(msg)},fb):fb()}catch(e){fb()}
-  }
-  function slug(n){return n.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'')}
-  function link(){var s=slug($('gIn').value);return s?base+'#'+s:base}
-  $('gIn').oninput=function(){$('gLink').value=link()};$('gLink').value=link();
-  $('shareWa').onclick=function(){var n=$('gIn').value.trim();open('https://wa.me/?text='+encodeURIComponent((n?'Dear '+n+',\n\n':'')+'With the blessings of Lord Ganesha, Smt. Sarla Rani and Sh. Sanjeev Khurana cordially invite you to the wedding of their son Vishal (Vishu) with Priya on 11th and 12th December 2026 at Hisar Haveli, Near Mayer Toll, Hansi.\n\nSee your invitation here:\n'+link()),'_blank','noopener')};
-  $('copyLink').onclick=function(){copy(link(),'Link copied.')};
 })();
 </script>
 </body>
